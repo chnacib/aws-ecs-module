@@ -18,20 +18,9 @@ variable "subnets" {
     description = "List of Subnets"  
 }
 
-variable "target_group_port" {
-    type = number
-    description = "Target group port"
-  
-}
-
 variable "certificate_arn" {
     type = string
     description = "ACM Certificate ARN"
   
 }
 
-variable "health_check" {
-    type = string
-    description = "Target group healthcheck path"
-  
-}

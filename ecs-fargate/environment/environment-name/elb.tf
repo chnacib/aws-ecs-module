@@ -4,8 +4,15 @@ module "alb_main" {
   internal          = false
   vpc_id            = "vpc-xxxxxxxxx"
   subnets           = ["subnet-xxxxxxxxx", "subnet-xxxxxxxxxxxx", "subnet-xxxxxxxxxxxxxx"]
-  target_group_port = 3000
   certificate_arn   = "arn:aws:acm:us-east-1:xxxxxxxxxxx:certificate/xxxxxxxxxxxxxxxx"
-  health_check = "/"
 }
 
+module "tg_main" {
+  source = "../../modules/target_group"
+  name = "tg-main"
+  port = 80
+  vpc_id = "vpc-xxxxxxxxx"
+  listener_arn = module.alb_main.listener_arn
+  host_header = ["api.example.com"]
+  health_check = "/"
+}

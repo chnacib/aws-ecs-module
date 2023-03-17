@@ -10,24 +10,6 @@ resource "aws_alb" "main" {
   }
 }
 
-resource "aws_alb_target_group" "main" {
-  name        = "${var.alb_name}-TG"
-  port        = var.target_group_port
-  protocol    = "HTTP"
-  vpc_id      = var.vpc_id
-  target_type = "ip"
-
-  health_check {
-    path = var.health_check
-  }
-
-
-  tags = {
-    Name = "${var.alb_name}-TG"
-  }
-}
-
-
 resource "aws_alb_listener" "http" {
   load_balancer_arn = aws_alb.main.arn
   port              = "80"
@@ -52,9 +34,14 @@ resource "aws_lb_listener" "https" {
   ssl_policy        = "ELBSecurityPolicy-2016-08"
   certificate_arn   = var.certificate_arn
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_alb_target_group.main.arn
+   default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Fixed response content"
+      status_code  = "404"
+    }
   }
 }
 
@@ -86,6 +73,6 @@ resource "aws_security_group" "main" {
 
 }
 
-output "target_group_arn" {
-  value = aws_alb_target_group.main.arn  
+output "listener_arn" {
+  value =  aws_lb_listener.https.arn
 }
